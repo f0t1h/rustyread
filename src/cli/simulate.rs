@@ -236,6 +236,10 @@ pub struct Command {
     /// Number of base, rustyread can store in ram before write in output in absolute value (e.g. 250M) or a relative depth (e.g. 25x)
     #[clap(long = "number_base_store")]
     pub nb_base_store: Option<Quantity>,
+
+    /// Ratio of forward strand reads
+    #[clap(long = "forward_strand", default_value= "0.5")]
+    pub forward_strand: f64,
 }
 
 #[cfg(test)]

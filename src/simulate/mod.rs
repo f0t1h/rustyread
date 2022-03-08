@@ -166,6 +166,7 @@ pub fn simulate(params: cli::simulate::Command) -> Result<()> {
             &references,
             &length,
             &identity,
+            params.forward_strand,
             &mut main_rng,
         )
         .par_bridge()

@@ -80,15 +80,18 @@ impl References {
     }
 
     /// Randomly get a reference index and strand according to depth
-    pub fn choose_reference<RNG>(&self, rng: &mut RNG) -> (usize, char)
+    pub fn choose_reference<RNG>(&self, ratio : f64, rng: &mut RNG) -> (usize, char)
     where
         RNG: rand::Rng,
     {
-        match ['+', '-'][rng.gen_range(0..=1) as usize] {
-            '+' => (self.dist.sample(rng), '+'),
-            '-' => (self.dist.sample(rng), '-'),
-            _ => unreachable!(),
+        let rval : f64 = rng.gen_range(0.0..=1.0);
+        if rval > ratio{
+            (self.dist.sample(rng), '+')
         }
+        else{
+            (self.dist.sample(rng), '-')
+        }
+
     }
 
     /// Adjust depth of reference to fix bias in small sequence representation
@@ -274,7 +277,7 @@ TCCCGCTGTC
         let mut rng = rand::rngs::StdRng::seed_from_u64(42);
         let refs = References::from_stream(std::io::Cursor::new(FASTA)).unwrap();
 
-        let seqs: Vec<(usize, char)> = (0..10).map(|_| refs.choose_reference(&mut rng)).collect();
+        let seqs: Vec<(usize, char)> = (0..10).map(|_| refs.choose_reference(0.5, &mut rng)).collect();
 
         assert_eq!(
             vec![
@@ -305,7 +308,7 @@ TCCCGCTGTC
         )
         .unwrap();
 
-        let seqs: Vec<(usize, char)> = (0..10).map(|_| refs.choose_reference(&mut rng)).collect();
+        let seqs: Vec<(usize, char)> = (0..10).map(|_| refs.choose_reference(0.5, &mut rng)).collect();
 
         assert_eq!(
             vec![

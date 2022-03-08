@@ -21,6 +21,7 @@ where
     references: &'a References,
     length_model: &'a model::Length,
     identity_model: &'a model::Identity,
+    forward_strand: f64,
     rng: &'a mut R,
 }
 
@@ -35,6 +36,7 @@ where
         references: &'a References,
         length_model: &'a model::Length,
         identity_model: &'a model::Identity,
+        forward_strand: f64,
         rng: &'a mut R,
     ) -> Self
     where
@@ -48,6 +50,7 @@ where
             references,
             length_model,
             identity_model,
+            forward_strand,
             rng,
         }
     }
@@ -75,11 +78,11 @@ where
 
         match read_type {
             ReadType::Real => {
-                let (mut ref_index, mut strand) = self.references.choose_reference(self.rng);
+                let (mut ref_index, mut strand) = self.references.choose_reference(self.forward_strand, self.rng);
                 let mut reference = &self.references.sequences[ref_index];
 
                 while !fragment_is_possible(length, reference.seq.len(), reference.circular) {
-                    let (r, s) = self.references.choose_reference(self.rng);
+                    let (r, s) = self.references.choose_reference(self.forward_strand, self.rng);
                     ref_index = r;
                     strand = s;
                     reference = &self.references.sequences[ref_index];
